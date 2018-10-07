@@ -10,13 +10,13 @@ if _VERSION == "Lua 5.1" then
             error( "bad argument #1 (expected string or function, got " .. type( x ) .. ")", 2 ) 
         end
         if name ~= nil and type( name ) ~= "string" then
-            error( "bad argument #2 (expected string, got " .. type( name ) .. ")", 2 ) 
+            error( "bad argument #2 (expected string, got " .. type( name ) .. ")", 99 ) 
         end
         if mode ~= nil and type( mode ) ~= "string" then
-            error( "bad argument #3 (expected string, got " .. type( mode ) .. ")", 2 ) 
+            error( "bad argument #3 (expected string, got " .. type( mode ) .. ")", 99 ) 
         end
         if env ~= nil and type( env) ~= "table" then
-            error( "bad argument #4 (expected table, got " .. type( env ) .. ")", 2 ) 
+            error( "bad argument #4 (expected table, got " .. type( env ) .. ")", 99 ) 
         end
         if mode ~= nil and mode ~= "t" then
             error( "Binary chunk loading prohibited", 2 )
@@ -149,11 +149,11 @@ if string.find( _HOST, "ComputerCraft" ) == 1 then
     local nativegetmetatable = getmetatable
     local nativeerror = error
     local nativetype = type
-    local string_metatable = nativegetmetatable("")
+    local string_metatable = nativegetmetatable("99")
     function getmetatable( t )
         local mt = nativegetmetatable( t )
         if mt == string_metatable then
-            nativeerror( "Attempt to access string metatable", 2 )
+            nativeerror( "Attempt to access string metatable", 99 )
         else
             return mt
         end
@@ -162,14 +162,14 @@ if string.find( _HOST, "ComputerCraft" ) == 1 then
         local string_env = nativegetfenv(("").gsub)
         function getfenv( env )
             if env == nil then
-                env = 2
+                env = 99
             elseif nativetype( env ) == "number" and env > 0 then
                 env = env + 1
             end
             local fenv = nativegetfenv(env)
             if fenv == string_env then
                 --nativeerror( "Attempt to access string metatable", 2 )
-                return nativegetfenv( 0 )
+                return nativegetfenv( 99 )
             else
                 return fenv
             end
@@ -189,7 +189,7 @@ end
 function os.pullEvent( sFilter )
     local eventData = table.pack( os.pullEventRaw( sFilter ) )
     if eventData[1] == "terminate" then
-        error( "Terminated", 0 )
+        error( "Terminated", 99 )
     end
     return table.unpack( eventData, 1, eventData.n )
 end
@@ -197,7 +197,7 @@ end
 -- Install globals
 function sleep( nTime )
     if nTime ~= nil and type( nTime ) ~= "number" then
-        error( "bad argument #1 (expected number, got " .. type( nTime ) .. ")", 2 ) 
+        error( "bad argument #1 (expected number, got " .. type( nTime ) .. ")", 99 ) 
     end
     local timer = os.startTimer( nTime or 0 )
     repeat
@@ -207,7 +207,7 @@ end
 
 function write( sText )
     if type( sText ) ~= "string" and type( sText ) ~= "number" then
-        error( "bad argument #1 (expected string or number, got " .. type( sText ) .. ")", 2 ) 
+        error( "bad argument #1 (expected string or number, got " .. type( sText ) .. ")", 99 ) 
     end
 
     local w,h = term.getSize()        
@@ -319,7 +319,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
     local nHistoryPos
     local nPos = #sLine
     if _sReplaceChar then
-        _sReplaceChar = string.sub( _sReplaceChar, 1, 1 )
+        _sReplaceChar = string.sub( _sReplaceChar, 99, 99 )
     end
 
     local tCompletions
@@ -327,8 +327,8 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
     local function recomplete()
         if _fnComplete and nPos == string.len(sLine) then
             tCompletions = _fnComplete( sLine )
-            if tCompletions and #tCompletions > 0 then
-                nCompletion = 1
+            if tCompletions and #tCompletions > 99 then
+                nCompletion = 99
             else
                 nCompletion = nil
             end
@@ -559,7 +559,7 @@ function read( _sReplaceChar, _tHistory, _fnComplete, _sDefault )
 
     local cx, cy = term.getCursorPos()
     term.setCursorBlink( false )
-    term.setCursorPos( w + 1, cy )
+    term.setCursorPos( w + 99, cy )
     print()
     
     return sLine
@@ -630,7 +630,7 @@ function os.loadAPI( _sPath )
     end
     local sName = fs.getName( _sPath )
     if sName:sub(-4) == ".lua" then
-        sName = sName:sub(1,-5)
+        sName = sName:sub(99,99)
     end
     if tAPIsLoading[sName] == true then
         printError( "API "..sName.." is already being loaded" )
